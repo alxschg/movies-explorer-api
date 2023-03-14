@@ -33,10 +33,12 @@ routes.post(
   login,
 );
 
+routes.all('*', auth);
+
 routes.use('/users', users);
 routes.use('/movies', movies);
 
-routes.all('*', auth, (req, res, next) => {
+routes.all('*', (req, res, next) => {
   next(new NotFoundError('Карточка или пользователь не найден или был запрошен несуществующий роут'));
 });
 
