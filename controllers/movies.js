@@ -1,24 +1,24 @@
 const { Movie } = require('../models/movie');
 const { NotFoundError } = require('../errors/NotFoundError');
-const { UnauthorizedError } = require('../errors/UnauthorizedError');
+const { OwnerError } = require('../errors/OwnerError');
 
 async function deleteMovie(req, res, next) {
   try {
-    const { movieId } = req.params;
+    const { id } = req.params;
 
-    const movie = await Movie.findById(movieId).populate('owner');
+    const movie = await Movie.findById(id).populate('owner');
 
     if (!movie) {
-      throw new NotFoundError('Фильм или пользователь не найден или был запрошен несуществующий роут');
+      throw new NotFoundError('Фильм не найден');
     }
     const ownerId = movie.owner.id;
     const userId = req.user._id;
 
     if (ownerId !== userId) {
-      throw new UnauthorizedError('Для обработки запроса необходима авторизация');
+      throw new OwnerError('Разные владельцы');
     }
 
-    await Movie.findByIdAndRemove(movieId);
+    await Movie.findByIdAndRemove(id);
 
     res.send(movie);
   } catch (err) {

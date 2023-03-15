@@ -18,7 +18,7 @@ function auth(req, res, next) {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'secretkey');
   } catch (err) {
-    throw UnauthorizedError('Ошибка авторизации');
+    throw new UnauthorizedError('Ошибка авторизации');
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса

@@ -15,7 +15,7 @@ async function getUserInfo(req, res, next) {
     const user = await User.findById(userId);
 
     if (!user) {
-      throw new NotFoundError('Карточка или пользователь не найден или был запрошен несуществующий роут');
+      throw new NotFoundError('Пользователь не найден');
     }
 
     res.send(user);
@@ -62,11 +62,15 @@ async function updateUserInfo(req, res, next) {
     );
 
     if (!user) {
-      throw new NotFoundError('Пользователь не найден или был запрошен несуществующий роут');
+      throw new NotFoundError('Пользователь не найден');
     }
 
     res.send(user);
   } catch (err) {
+    if (err.code === 11000) {
+      next(new ConflictError('Такой email уже существует'));
+      return;
+    }
     next(err);
   }
 }

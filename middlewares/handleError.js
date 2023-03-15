@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 function handleError(err, req, res, next) {
   const { statusCode = 500 } = err;
   let { message } = err;
@@ -8,6 +7,7 @@ function handleError(err, req, res, next) {
   }
 
   res.status(statusCode).send({ message });
+  next();
 }
 
 module.exports = { handleError };
